@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Interactivo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom right, #add8e6, #dda0dd);
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
+
+    #container {
+      text-align: center;
+    }
+
+    #envelope {
+      width: 150px;
+      height: 100px;
+      background-color: white;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      border: 2px solid #ccc;
+      transition: transform 0.3s;
+      z-index: 1;
+    }
+
+    #envelope.open::before {
+      content: "";
+      position: absolute;
+      top: -40px;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 75px solid transparent;
+      border-right: 75px solid transparent;
+      border-bottom: 40px solid white;
+    }
+
+    #message, .buttons, #finalMessage {
+      margin-top: 20px;
+      color: white;
+    }
+
+    .buttons button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .purple { background-color: #8A2BE2; color: white; }
+    .red { background-color: #f44336; color: white; }
+
+    iframe {
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="envelope" onclick="handleEnvelopeClick()"></div>
+    <div id="message">Toca el sobre para abrirlo</div>
+    <div class="buttons" style="display: none;">
+      <button class="purple" onclick="maybeLater()">No estoy segura</button>
+      <button class="red" onclick="noThanks()">Mejor no</button>
+    </div>
+    <div id="finalMessage"></div>
+  </div>
+
+  <script>
+    let stage = 0;
+
+    function handleEnvelopeClick() {
+      if (stage === 0) {
+        stage = 1;
+        document.getElementById('message').innerText = "Toca nuevamente el sobre para abrirlo";
+        document.querySelector('.buttons').style.display = 'block';
+      } else if (stage === 1) {
+        openEnvelope();
+      }
+    }
+
+    function openEnvelope() {
+      const envelope = document.getElementById('envelope');
+      envelope.classList.add('open');
+      document.getElementById('message').innerHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/UpE26vOeevg?autoplay=1" frameborder="0" allowfullscreen></iframe><br>:)' ;
+      document.querySelector('.buttons').style.display = 'none';
+    }
+
+    function maybeLater() {
+      document.getElementById('container').innerHTML = `
+        <div id="finalMessage">No hay ningun problema, vuelve cuando quieras :)</div>
+        <button onclick="location.reload()" class="purple" style="margin-top: 20px;">Volver al inicio</button>
+      `;
+    }
+
+    function noThanks() {
+      document.getElementById('container').innerHTML = '<div id="finalMessage">No estás obligada :)</div>';
+      setTimeout(() => {
+        document.getElementById('finalMessage').innerHTML += '<div>...¿O sí? >:)</div>';
+        setTimeout(() => {
+          document.getElementById('finalMessage').innerHTML += '<div>Ntc no pasa nada</div>';
+          setTimeout(() => {
+            document.getElementById('container').innerHTML = '';
+          }, 4000);
+        }, 1000);
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
