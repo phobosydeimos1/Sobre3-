@@ -12,40 +12,50 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(to bottom right, #add8e6, #dda0dd);
+      background: linear-gradient(135deg, #f7b267, #f79d65, #f4845f, #f27059, #e94f37);
       font-family: 'Arial', sans-serif;
       color: white;
     }
 
     #container {
       text-align: center;
+      width: 100%;
+    }
+
+    #envelope-container {
+      position: relative;
+      display: inline-block;
     }
 
     #envelope {
-      width: 150px;
+      width: 200px;
       height: 100px;
-      background-color: white;
-      margin: 0 auto;
-      position: relative;
-      cursor: pointer;
+      background-color: #f5f5dc;
       border: 2px solid #ccc;
-      transition: transform 0.3s;
-      z-index: 1;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
     }
 
-    #envelope.open::before {
+    #flap {
       content: "";
       position: absolute;
-      top: -40px;
+      top: -50px;
       left: 0;
       width: 0;
       height: 0;
-      border-left: 75px solid transparent;
-      border-right: 75px solid transparent;
-      border-bottom: 40px solid white;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 50px solid #f5f5dc;
+      transition: transform 1s ease-in-out;
+      transform-origin: bottom center;
     }
 
-    #message, .buttons, #finalMessage {
+    #flap.opened {
+      transform: rotateX(180deg);
+    }
+
+    #instruction, #message, #response-buttons, #finalMessage, #extraButtons, #smiley {
       margin-top: 20px;
       color: white;
     }
@@ -59,65 +69,71 @@
       cursor: pointer;
     }
 
+    .green { background-color: #4CAF50; color: white; }
     .purple { background-color: #8A2BE2; color: white; }
     .red { background-color: #f44336; color: white; }
-
-    iframe {
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 2;
-    }
+    .blue { background-color: #2196F3; color: white; }
   </style>
 </head>
 <body>
   <div id="container">
-    <div id="envelope" onclick="handleEnvelopeClick()"></div>
-    <div id="message">Toca el sobre para abrirlo</div>
-    <div class="buttons" style="display: none;">
-      <button class="purple" onclick="maybeLater()">No estoy segura</button>
-      <button class="red" onclick="noThanks()">Mejor no</button>
+    <div id="envelope-container">
+      <div id="flap"></div>
+      <div id="envelope" onclick="openEnvelope()"></div>
+    </div>
+    <div id="instruction">Toca el sobre para abrirlo</div>
+    <div id="message"></div>
+    <div id="response-buttons" style="display: none;">
+      <button class="green" onclick="handleYes()">Gracias jeje pues solo me avisas.</button>
+      <button class="purple" onclick="handleMaybe()">No estoy segura</button>
+      <button class="red" onclick="handleNo()">No, no creo que sea buena idea</button>
     </div>
     <div id="finalMessage"></div>
+    <div id="extraButtons"></div>
+    <div id="smiley"></div>
   </div>
 
   <script>
-    let stage = 0;
-
-    function handleEnvelopeClick() {
-      if (stage === 0) {
-        stage = 1;
-        document.getElementById('message').innerText = "Toca nuevamente el sobre para abrirlo";
-        document.querySelector('.buttons').style.display = 'block';
-      } else if (stage === 1) {
-        openEnvelope();
-      }
-    }
-
     function openEnvelope() {
-      const envelope = document.getElementById('envelope');
-      envelope.classList.add('open');
-      document.getElementById('message').innerHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/UpE26vOeevg?autoplay=1" frameborder="0" allowfullscreen></iframe><br>:)' ;
-      document.querySelector('.buttons').style.display = 'none';
-    }
+      document.getElementById("flap").classList.add("opened");
+      document.getElementById("instruction").style.display = 'none';
+      document.getElementById("message").innerText = "*sale una hoja xd*";
 
-    function maybeLater() {
-      document.getElementById('container').innerHTML = `
-        <div id="finalMessage">No hay ningun problema, vuelve cuando quieras :)</div>
-        <button onclick="location.reload()" class="purple" style="margin-top: 20px;">Volver al inicio</button>
-      `;
-    }
-
-    function noThanks() {
-      document.getElementById('container').innerHTML = '<div id="finalMessage">No estás obligada :)</div>';
       setTimeout(() => {
-        document.getElementById('finalMessage').innerHTML += '<div>...¿O sí? >:)</div>';
+        document.getElementById("message").innerText = "Hola, ¿Puedo recogerte mañana a tu trabajo?\nSolamente para hablar, ó solo contarte todo lo interesante detrás del video que hice, ¿Qué dices?🥲";
         setTimeout(() => {
-          document.getElementById('finalMessage').innerHTML += '<div>Ntc no pasa nada</div>';
-          setTimeout(() => {
-            document.getElementById('container').innerHTML = '';
-          }, 4000);
-        }, 1000);
-      }, 2500);
+          document.getElementById("response-buttons").style.display = 'block';
+        }, 1500);
+      }, 3000);
+    }
+
+    function handleYes() {
+      document.getElementById("container").innerHTML = '<div id="finalMessage">:o</div>';
+      setTimeout(() => {
+        document.getElementById("finalMessage").innerText = ':3';
+        setTimeout(() => {
+          document.getElementById("finalMessage").innerHTML += '<div>Gracias jeje, pues solo mándame un sticker y yo entenderé cuál decisión seleccionaste</div>';
+        }, 1500);
+      }, 1500);
+    }
+
+    function handleNo() {
+      document.getElementById("container").innerHTML = '<div id="finalMessage">No pasa nada jaja🙂. No contestes por Whats y yo sabré que elegiste que mejor no.</div>';
+      setTimeout(() => {
+        document.getElementById("finalMessage").innerText = ':)';
+      }, 8000);
+    }
+
+    function handleMaybe() {
+      document.getElementById("response-buttons").style.display = 'none';
+      document.getElementById("finalMessage").innerText = 'No te comprometes a nada con esto, realmente solo me gustaría verte y charlar un poco. No debes sentirte mal si no aceptas, el \"no\" ya lo tenía al enviarte esto🙂';
+      setTimeout(() => {
+        document.getElementById("extraButtons").innerHTML = '<button class="blue" onclick="reloadPage()">Mmm...</button>';
+      }, 4000);
+    }
+
+    function reloadPage() {
+      location.reload();
     }
   </script>
 </body>
